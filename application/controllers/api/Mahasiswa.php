@@ -90,19 +90,19 @@ class Mahasiswa extends REST_Controller
         }
     }*/
 
-    public function index_post(){
+    public function index_post()
+    {
         $nim = $this->post('nim');
         $nama = $this->post('nama');
         $email = $this->post('email');
         $ipk = $this->post('ipk');
 
-        $data = array("nim"=>$nim,"nama"=>$nama,"email"=>$email,"ipk"=>$ipk);
-        $result = $this->db->insert('mahasiswa',$data);
-        if($result!=1){
-            return $this->response("Gagal menambah data",400);
-        }
-        else {
-            return $this->response(array("status"=>"201","data"=>$data),201);
+        $data = array("nim" => $nim, "nama" => $nama, "email" => $email, "ipk" => $ipk);
+        $result = $this->db->insert('mahasiswa', $data);
+        if ($result != 1) {
+            return $this->response("Gagal menambah data", 400);
+        } else {
+            return $this->response(array("status" => "201", "data" => $data), 201);
         }
     }
 
@@ -129,29 +129,31 @@ class Mahasiswa extends REST_Controller
         return $this->response($err,400);
     }*/
 
-    public function index_put(){
+    public function index_put()
+    {
         $nim = $this->put('nim');
         $nama = $this->put('nama');
-        $email= $this->put('email');
+        $email = $this->put('email');
         $ipk = $this->put('ipk');
-        
+
         $this->db->where('nim', $nim);
         $data = $this->db->get('mahasiswa')->result();
-        if(count($data)!=0){
-            $update = array("nama"=>$nama,"email"=>$email,'ipk'=>$ipk);
-            $this->db->where('nim',$nim);
-            $result = $this->db->update('mahasiswa',$update);
-            if($result==1){
-                return $this->response("Data berhasil diupdate",200);
-            }
-            else {
+        if (count($data) != 0) {
+            $update = array("nama" => $nama, "email" => $email, 'ipk' => $ipk);
+            $this->db->where('nim', $nim);
+            $result = $this->db->update('mahasiswa', $update);
+            if ($result == 1) {
+                return $this->response("Data berhasil diupdate", 200);
+            } else {
                 $err = "Gagal update data";
             }
-        }else {
+        } else {
             $err = "Data nim tidak ditemukan";
         }
-        return $this->response($err,400);
+        return $this->response($err, 400);
     }
+
+
 
     /*public function index_put()
     {
@@ -162,9 +164,34 @@ class Mahasiswa extends REST_Controller
         return $this->response($data, 200);
     }*/
 
-    public function index_delete($nim)
+    /*public function index_delete($nim)
     {
         $data = "Data nim " . $nim . " berhasil didelete";
         return $this->response($data, 200);
+    }*/
+
+
+    public function index_delete($nim)
+    {
+        $this->db->where('nim', $nim);
+        $data = $this->db->get('mahasiswa')->result();
+        if (count($data) != 0) {
+            $cek = true;
+        } else {
+            $cek = false;
+        }
+
+        if ($cek) {
+            $sql = "delete from mahasiswa where nim=?";
+            $result = $this->db->query($sql, array($nim));
+
+            if ($result != 1) {
+                return $this->response("Gagal delete data", 400);
+            } else {
+                return $this->response("Berhasil Delete data $nim", 200);
+            }
+        } else {
+            return $this->response("Nim tidak ditemukan ", 400);
+        }
     }
 }
