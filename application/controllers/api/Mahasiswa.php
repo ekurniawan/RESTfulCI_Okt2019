@@ -12,9 +12,29 @@ class Mahasiswa extends REST_Controller {
     }
 
     public function index_get(){
-        $nama = $this->get('nama');
-        return $this->response($nama,200);
+        $nim = $this->get('nim');
+        if($nim==''){
+            $sql = "select * from mahasiswa order by nama";
+            $data = $this->db->query($sql)->result();
+        }else {
+            $sql = "select * from mahasiswa where nim=?";
+            $data = $this->db->query($sql,array($nim))->result();
+            $data = $data[0];
+        }
+      
+        return $this->response($data,200);
     } 
+
+    public function getbyid_get($nim){
+        $sql = "select * from mahasiswa where nim=?";
+        $data = $this->db->query($sql,array($nim))->result();
+        if(count($data)==0){
+            return $this->response("Data $nim tidak ditemukan ",400); 
+        }
+        else {
+            return $this->response($data[0],200); 
+        }
+    }
 
     public function tampil_get(){
         $arrNama = array(array("id"=>"12345","nama"=>"budi","alamat"=>"pekanbaru"),
