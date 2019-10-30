@@ -11,7 +11,9 @@ class Mahasiswa extends REST_Controller {
 
     }
 
-    public function index_get(){
+    //http://localhost/samplerestapi/index.php/api/mahasiswa
+    //http://localhost/samplerestapi/index.php/api/mahasiswa?nim=72006666
+    /*public function index_get(){
         $nim = $this->get('nim');
         if($nim==''){
             $sql = "select * from mahasiswa order by nama";
@@ -21,11 +23,35 @@ class Mahasiswa extends REST_Controller {
             $data = $this->db->query($sql,array($nim))->result();
             $data = $data[0];
         }
-      
         return $this->response($data,200);
-    } 
+    }*/
+    
+    public function index_get(){
+        $this->db->select('nim,nama');
+        $data = $this->db->get('mahasiswa')->result();
+        return $this->response($data,200);
+    }
 
     public function getbyid_get($nim){
+        $this->db->where('nim',$nim);
+        $data = $this->db->get('mahasiswa')->result();
+        if(count($data)==0){
+            return $this->response("Data $nim tidak ditemukan ",400); 
+        }
+        else {
+            return $this->response($data[0],200); 
+        }
+    }
+
+    //https://codeigniter.com/userguide2/database/active_record.html#select
+    public function getbynama_get($nama){
+        $this->db->like('nama',$nama);
+        $data = $this->db->get('mahasiswa')->result();
+        return $this->response($data,200);
+    }
+
+    //http://localhost/samplerestapi/index.php/api/mahasiswa/getbyid/72006666
+    /*public function getbyid_get($nim){
         $sql = "select * from mahasiswa where nim=?";
         $data = $this->db->query($sql,array($nim))->result();
         if(count($data)==0){
@@ -34,7 +60,7 @@ class Mahasiswa extends REST_Controller {
         else {
             return $this->response($data[0],200); 
         }
-    }
+    }*/
 
     public function tampil_get(){
         $arrNama = array(array("id"=>"12345","nama"=>"budi","alamat"=>"pekanbaru"),
