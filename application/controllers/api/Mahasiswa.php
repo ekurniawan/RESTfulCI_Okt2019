@@ -39,7 +39,10 @@ class Mahasiswa extends REST_Controller {
         return $this->response($data,200);
     }
 
-    
+    public function index_delete($nim){
+        $data = "Data nim ".$nim." berhasil didelete";
+        return $this->response($data,200);
+    }
 }
 
 ?>
