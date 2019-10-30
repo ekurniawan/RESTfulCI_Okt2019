@@ -106,18 +106,37 @@ class Mahasiswa extends REST_Controller
         }
     }
 
-    /*public function index_put(){
+    public function index_put(){
+        $nim = $this->put('nim');
+        $nama = $this->put('nama');
+        $email= $this->put('email');
+        $ipk = $this->put('ipk');
+        
+        $this->db->where('nim', $nim);
+        $data = $this->db->get('mahasiswa')->result();
+        if(count($data)!=0){
+            $sql = "update mahasiswa set nama=?, email=?, ipk=? where nim=?";
+            $result = $this->db->query($sql,array($nama,$email,$ipk,$nim));
+            if($result==1){
+                return $this->response("Data berhasil diupdate",200);
+            }
+            else {
+                $err = "Gagal update data";
+            }
+        }else {
+            $err = "Data nim tidak ditemukan";
+        }
+        return $this->response($err,400);
+    }
 
-    }*/
-
-    public function index_put()
+    /*public function index_put()
     {
         $nim = $this->put('nim');
         $nama = $this->put('nama');
 
         $data = "Data " . $nim . " dan " . $nama . " berhasil di edit ";
         return $this->response($data, 200);
-    }
+    }*/
 
     public function index_delete($nim)
     {
