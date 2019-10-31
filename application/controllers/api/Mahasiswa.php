@@ -26,12 +26,13 @@ class Mahasiswa extends REST_Controller
         return $this->response($data,200);
     }*/
 
-    public function index_get()
+    /*public function index_get()
     {
         $headers = $this->input->request_headers();
         if (Authorization::tokenIsExist($headers)) {
             $token = Authorization::validateToken($headers["Authorization"]);
             if ($token != false) {
+                //if($token->id=="erick")
                 $data = $this->db->get('mahasiswa')->result();
                 return $this->response($data, 200);
             } else {
@@ -42,6 +43,12 @@ class Mahasiswa extends REST_Controller
             $response = ['status' => 401, 'message' => "unauthorized"];
             return $this->set_response($response, 401);
         }
+    }*/
+
+    public function index_get()
+    {
+        $data = $this->db->get('mahasiswa')->result();
+        return $this->response($data, 200);
     }
 
     public function getbyid_get($nim)
@@ -101,7 +108,7 @@ class Mahasiswa extends REST_Controller
         }
     }*/
 
-    public function index_post()
+    /*public function index_post()
     {
         $headers = $this->input->request_headers();
         if (Authorization::tokenIsExist($headers)) {
@@ -119,6 +126,39 @@ class Mahasiswa extends REST_Controller
                 } else {
                     return $this->response(array("status" => "201", "data" => $data), 201);
                 }
+            } else {
+                $response = ['status' => 403, 'message' => "Forbidden"];
+                return $this->set_response($response, 403);
+            }
+        } else {
+            $response = ['status' => 401, 'message' => "unauthorized"];
+            return $this->set_response($response, 401);
+        }
+    }*/
+
+    public function index_post()
+    {
+        $nim = $this->post('nim');
+        $nama = $this->post('nama');
+        $email = $this->post('email');
+        $ipk = $this->post('ipk');
+
+        $data = array("nim" => $nim, "nama" => $nama, "email" => $email, "ipk" => $ipk);
+        $result = $this->db->insert('mahasiswa', $data);
+        if ($result != 1) {
+            return $this->response("Gagal menambah data", 400);
+        } else {
+            return $this->response(array("status" => "201", "data" => $data), 201);
+        }
+    }
+
+    public function cekuser_get()
+    {
+        $headers = $this->input->request_headers();
+        if (Authorization::tokenIsExist($headers)) {
+            $token = Authorization::validateToken($headers["Authorization"]);
+            if ($token != false) {
+                return $this->response($token->id . " " . $token->nbf, 200);
             } else {
                 $response = ['status' => 403, 'message' => "Forbidden"];
                 return $this->set_response($response, 403);
