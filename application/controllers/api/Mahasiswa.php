@@ -28,9 +28,20 @@ class Mahasiswa extends REST_Controller
 
     public function index_get()
     {
-        //$this->db->select('nim,nama');
-        $data = $this->db->get('mahasiswa')->result();
-        return $this->response($data, 200);
+        $headers = $this->input->request_headers();
+        if (Authorization::tokenIsExist($headers)) {
+            $token = Authorization::validateToken($headers["Authorization"]);
+            if ($token != false) {
+                $data = $this->db->get('mahasiswa')->result();
+                return $this->response($data, 200);
+            } else {
+                $response = ['status' => 403, 'message' => "Forbidden"];
+                return $this->set_response($response, 403);
+            }
+        } else {
+            $response = ['status' => 401, 'message' => "unauthorized"];
+            return $this->set_response($response, 401);
+        }
     }
 
     public function getbyid_get($nim)
@@ -92,17 +103,29 @@ class Mahasiswa extends REST_Controller
 
     public function index_post()
     {
-        $nim = $this->post('nim');
-        $nama = $this->post('nama');
-        $email = $this->post('email');
-        $ipk = $this->post('ipk');
+        $headers = $this->input->request_headers();
+        if (Authorization::tokenIsExist($headers)) {
+            $token = Authorization::validateToken($headers["Authorization"]);
+            if ($token != false) {
+                $nim = $this->post('nim');
+                $nama = $this->post('nama');
+                $email = $this->post('email');
+                $ipk = $this->post('ipk');
 
-        $data = array("nim" => $nim, "nama" => $nama, "email" => $email, "ipk" => $ipk);
-        $result = $this->db->insert('mahasiswa', $data);
-        if ($result != 1) {
-            return $this->response("Gagal menambah data", 400);
+                $data = array("nim" => $nim, "nama" => $nama, "email" => $email, "ipk" => $ipk);
+                $result = $this->db->insert('mahasiswa', $data);
+                if ($result != 1) {
+                    return $this->response("Gagal menambah data", 400);
+                } else {
+                    return $this->response(array("status" => "201", "data" => $data), 201);
+                }
+            } else {
+                $response = ['status' => 403, 'message' => "Forbidden"];
+                return $this->set_response($response, 403);
+            }
         } else {
-            return $this->response(array("status" => "201", "data" => $data), 201);
+            $response = ['status' => 401, 'message' => "unauthorized"];
+            return $this->set_response($response, 401);
         }
     }
 
@@ -182,8 +205,10 @@ class Mahasiswa extends REST_Controller
         }
 
         if ($cek) {
-            $sql = "delete from mahasiswa where nim=?";
-            $result = $this->db->query($sql, array($nim));
+            //$sql = "delete from mahasiswa where nim=?";
+            //$result = $this->db->query($sql, array($nim));
+            $this->db->where('nim', $nim);
+            $result = $this->db->delete('mahasiswa');
 
             if ($result != 1) {
                 return $this->response("Gagal delete data", 400);

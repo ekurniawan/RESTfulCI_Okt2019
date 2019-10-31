@@ -110,7 +110,7 @@ $config['rest_realm'] = 'REST API';
 |           authorization key
 |
 */
-$config['rest_auth'] = FALSE;
+$config['rest_auth'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,7 @@ $config['rest_auth'] = FALSE;
 | Note: If 'rest_auth' is set to 'session' then change 'auth_source' to the name of the session variable
 |
 */
-$config['auth_source'] = 'ldap';
+$config['auth_source'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -138,7 +138,6 @@ $config['auth_source'] = 'ldap';
 |
 */
 $config['allow_auth_and_keys'] = TRUE;
-$config['strict_api_and_auth'] = TRUE; // force the use of both api and auth before a valid api request is made
 
 /*
 |--------------------------------------------------------------------------
