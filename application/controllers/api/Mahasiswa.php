@@ -234,8 +234,36 @@ class Mahasiswa extends REST_Controller
     }*/
 
 
-    public function index_delete($nim)
+    /*public function index_delete($nim)
     {
+        //$nim = $this->delete('nim');
+        $this->db->where('nim', $nim);
+        $data = $this->db->get('mahasiswa')->result();
+        if (count($data) != 0) {
+            $cek = true;
+        } else {
+            $cek = false;
+        }
+
+        if ($cek) {
+            //$sql = "delete from mahasiswa where nim=?";
+            //$result = $this->db->query($sql, array($nim));
+            $this->db->where('nim', $nim);
+            $result = $this->db->delete('mahasiswa');
+
+            if ($result != 1) {
+                return $this->response("Gagal delete data", 400);
+            } else {
+                return $this->response("Berhasil Delete data $nim", 200);
+            }
+        } else {
+            return $this->response("Nim tidak ditemukan ", 400);
+        }
+    }*/
+
+    public function index_delete()
+    {
+        $nim = $this->delete('nim');
         $this->db->where('nim', $nim);
         $data = $this->db->get('mahasiswa')->result();
         if (count($data) != 0) {
